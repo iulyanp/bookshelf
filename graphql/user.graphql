@@ -1,0 +1,17 @@
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+extend type Query {
+    hello: String!
+    greet(name: String = "you"): String
+
+    me: User @auth
+    users: [User!]! @paginate(defaultCount: 10)
+    user(id: ID @eq): User @find
+}

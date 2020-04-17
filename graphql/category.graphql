@@ -1,0 +1,47 @@
+
+type Category {
+    id: ID!
+    name: String!
+    books: [Book] @hasMany
+}
+
+extend type Query {
+    categories: [Category] @all
+    category(id: ID @eq): Category @find
+}
+
+extend type Mutation {
+    createCategory(input: CreateCategoryInput! @spread): Category @create
+    updateCategory(input: UpdateCategoryInput! @spread): Category @update
+    deleteCategory(id: ID!): Category @delete
+}
+
+input CreateCategoryInput {
+    name: String @rules(apply: ["required", "unique:categories"])
+    #    books: CreateBookRelation
+}
+
+input UpdateCategoryInput {
+    id: ID @rules(apply: ["required"])
+    name: String @rules(apply: ["required", "unique:categories"])
+}
+
+input UpdateBookInput {
+    id: ID!
+    title: String!
+    author: String!
+    image: String
+    link: String
+    description: String
+    featured: Boolean
+    category: CreateCategoryBelongsTo!
+}
+
+input UpdateCategoryBelongsTo {
+    connect: ID
+    create: CreateCategoryInput
+    update: UpdateCategoryInput
+    #    upsert: UpsertCategoryInput
+    #    disconnect: Boolean
+    #    delete: Boolean
+}

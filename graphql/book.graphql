@@ -1,0 +1,53 @@
+
+type Book {
+    id: ID!
+    title: String!
+    author: String!
+    image: String
+    link: String
+    description: String
+    featured: Boolean
+    category: Category! @belongsTo
+}
+
+extend type Query {
+    books: [Book] @all
+    book(id: ID @eq): Book @find
+    booksByFeatured(featured: Boolean! @eq): [Book] @all
+    complexQuery(search: String!): [Book]
+}
+
+extend type Mutation {
+    createBook(input: CreateBookInput! @spread): Book @create
+    updateBook(input: UpdateBookInput! @spread): Book @update
+    deleteBook(id: ID!): Book @delete
+}
+
+input CreateBookRelation{
+    connect: [ID]
+    create: [CreateBookInput!]
+    update: [UpdateBookInput!]
+}
+
+input UpdateBookRelation{
+    create: [CreateBookInput!]
+    update: [UpdateBookInput!]
+    delete: [ID!]
+}
+
+input CreateBookInput {
+    title: String @rules(apply: ["required"])
+    author: String @rules(apply: ["required"])
+    image: String
+    link: String
+    description: String
+    featured: Boolean
+    category: CreateCategoryBelongsTo!
+}
+
+input CreateCategoryBelongsTo {
+    connect: ID
+    create: CreateCategoryInput
+    update: UpdateCategoryInput
+    #    upsert: UpsertCategoryInput
+}
